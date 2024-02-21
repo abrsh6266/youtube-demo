@@ -11,11 +11,11 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $incomingFields = $request->validate([
-            'email' => 'required',
-            'password ' => 'required'
+            'loginName' => 'required',
+            'loginPassword' => 'required'
         ]);
-        
-        if (auth()->attempt(['email' => $incomingFields['email'], 'password' => $incomingFields['password']])) {
+
+        if (auth()->attempt(['name' => $incomingFields['loginName'], 'password' => $incomingFields['loginPassword']])) {
             $request->session()->regenerate();
         }
         return redirect('/');
