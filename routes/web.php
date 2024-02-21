@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\postController;
 use App\Http\Controllers\UserController;
+use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('home');
+    $posts = auth()->user()->usersPosts()->latest()->get();
+    //$posts = Post::where('user_id',auth()->id())->get();
+    return view('home',['posts'=> $posts]);
 });
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/logout', [UserController::class, 'logout']);
 Route::post('/login', [UserController::class, 'login']);
+
+//posts
 Route::post('/create-post', [postController::class, 'createPost']);
