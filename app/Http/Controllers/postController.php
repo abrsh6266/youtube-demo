@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 
 class postController extends Controller
 {
-    public function createPost(Request $request){
+    public function createPost(Request $request)
+    {
         $incomingRequest = $request->validate([
-            "title"=> "required",
+            "title" => "required",
             "body" => "required",
         ]);
         $incomingRequest['title'] = strip_tags($incomingRequest['title']);
@@ -18,10 +19,26 @@ class postController extends Controller
         Post::create($incomingRequest);
         return redirect('/');
     }
-    public function ShowEditScreen(Post $post){
+    public function ShowEditScreen(Post $post)
+    {
+        if (auth()->user()->id !== $post['user_id']) {
+            return redirect('/');
+        }
         return view('edit-post', ['post' => $post]);
     }
-    public function actuallyUpdatePost(Post $post,Request $request){
-        
+    public function actuallyUpdatePost(Post $post, Request $request)
+    {
+        if (auth()->user()->id !== $post['user_id']) {
+            return redirect('/');
+        }
+        $incomingRequest = $request->validate([
+            "title" => "required",
+            "body" => "required",
+        ]);
+        $incomingRequest['title'] = strip_tags($incomingRequest['title']);
+        $incomingRequest['body'] = strip_tags($incomingRequest['body']);
+
+        $post->update($incomingRequest);
+        return redirect('/');
     }
 }
